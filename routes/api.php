@@ -21,5 +21,5 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 
 Route::group(['prefix' => 'movies', 'middleware' => 'auth:sanctum'], function () {
     Route::get('/', [MovieController::class, 'index']);
-    Route::post('add', [BookController::class, 'add']);
+    Route::post('add', [MovieController::class, 'add']);
 });
