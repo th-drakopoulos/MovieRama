@@ -27,7 +27,8 @@
                 <a class="navbar-brand">MovieRama</a>
                 <div
                     class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
-                    <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Home</a>
+                    Welcome Back 
+                    <a href="{{ url('/home') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">{{ Auth::user()->name }}</a>
                     <a href="{{ route('signout') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Sign
                         Out</a>
 
