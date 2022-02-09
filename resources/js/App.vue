@@ -5,10 +5,10 @@
                 <!-- for logged-in user-->
                 <div class="navbar-nav" v-if="isLoggedIn">
                     <router-link to="/dashboard" class="nav-item nav-link"
-                        >Dashboard</router-link
+                        >MovieRama</router-link
                     >
-                    <router-link to="/books" class="nav-item nav-link"
-                        >Books</router-link
+                    <router-link to="/movies" class="nav-item nav-link"
+                        >Movies</router-link
                     >
                     <a
                         class="nav-item nav-link"
@@ -28,9 +28,6 @@
                     <router-link to="/register" class="nav-item nav-link"
                         >Register
                     </router-link>
-                    <router-link to="/about" class="nav-item nav-link"
-                        >About</router-link
-                    >
                 </div>
             </div>
         </nav>
