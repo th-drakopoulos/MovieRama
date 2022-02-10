@@ -20,6 +20,8 @@ class MovieIndexResource extends JsonResource
             'description' => $this->description,
             'likes' => $this->likes,
             'hates' => $this->hates,
+            'user_id' => $this->user->id,
+            'user_name' => $this->user->name,
             'created_at' => $this->created_at,
         ];
     }

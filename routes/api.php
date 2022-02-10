@@ -19,7 +19,10 @@ Route::post('login', [UserController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
 Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::group(['prefix' => 'movies', 'middleware' => 'auth:sanctum'], function () {
-    Route::get('/', [MovieController::class, 'index']);
-    Route::post('add', [MovieController::class, 'add']);
-});
+Route::get('/movies', [MovieController::class, 'index']);
+Route::middleware('auth:sanctum')->post('add', [MovieController::class, 'add']);
+
+// Route::group(['prefix' => 'movies', 'middleware' => 'auth:sanctum'], function () {
+//     Route::get('/', [MovieController::class, 'index']);
+//     Route::post('add', [MovieController::class, 'add']);
+// });

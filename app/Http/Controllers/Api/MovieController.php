@@ -10,6 +10,6 @@ class MovieController extends Controller
 {
     public function index()
     {
-        return MovieIndexResource::collection(Movie::all());
+        return MovieIndexResource::collection(Movie::with('user')->get());
     }
 }
