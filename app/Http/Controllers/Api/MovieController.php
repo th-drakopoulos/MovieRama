@@ -8,8 +8,13 @@ use App\Models\Movie;
 
 class MovieController extends Controller
 {
-    public function index()
+    public function index($sort = null)
     {
-        return MovieIndexResource::collection(Movie::with('user')->get());
+        if ($sort) {
+            return MovieIndexResource::collection(Movie::with('user')->orderBy($sort)->get());
+        } else {
+            return MovieIndexResource::collection(Movie::with('user')->get());
+        }
+
     }
 }

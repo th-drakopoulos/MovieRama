@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container h-100">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="alert alert-danger" role="alert" v-if="error !== null">

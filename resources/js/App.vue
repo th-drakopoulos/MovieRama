@@ -1,14 +1,8 @@
 <template>
-  <div class="container mt-2 bg-white">
+  <div class="container mt-2 bg-white vh-100 mb-3">
     <Navbar @logout="logout" :isLoggedIn="isLoggedIn" />
-
-    <!-- <div class="row">
-      <div class="col-md-8">
-        <Movies />
-      </div>
-      <div class="col-md-4"></div>
-    </div> -->
     <router-view />
+    <br />
   </div>
 </template>
 
@@ -18,8 +12,7 @@ import Navbar from './components/TheNavBar'
 export default {
   name: 'App',
   components: {
-    Navbar,
-    SortBar
+    Navbar
   },
   data() {
     return {

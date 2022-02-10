@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SortBar />
+    <SortBar @change-sort="changeSort" />
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div
@@ -13,8 +13,13 @@
             {{ movie.title }}
           </h3>
           <div class="card-text mb-2">
-            Posted by {{ movie.user_name }}
-            {{ fromNow(movie.created_at) }}
+            <div class="d-flex flex-row align-items-center">
+              <span>Posted by</span>
+              <a class="nav-item nav-link" @click="testFunction">{{
+                movie.user_name
+              }}</a>
+              <span>{{ fromNow(movie.created_at) }}</span>
+            </div>
           </div>
           <div class="card-text mb-2">{{ movie.description }}</div>
           <div class="card-text" v-if="movie.likes > 0 || movie.hates > 0">
@@ -37,13 +42,14 @@ export default {
   data() {
     return {
       loading: false,
-      movies: null
+      movies: null,
+      sortBy: ''
     }
   },
   async created() {
     try {
       this.loading = true
-      const response = (await axios.get('/api/movies')).data
+      const response = (await axios.get(`/api/movies`)).data
       if (response) {
         this.movies = response.data
       }
@@ -69,6 +75,22 @@ export default {
     },
     fromNow(value) {
       return moment(value).fromNow()
+    },
+    async changeSort(value) {
+      try {
+        this.loading = true
+        const response = (await axios.get(`/api/movies/${value}`)).data
+        if (response) {
+          this.movies = response.data
+        }
+      } catch (error) {
+        console.warn(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    testFunction() {
+      console.log('Nothing')
     }
   }
   // beforeRouteEnter(to, from, next) {
@@ -79,3 +101,8 @@ export default {
   // }
 }
 </script>
+<style lang="scss" scoped>
+a {
+  cursor: pointer;
+}
+</style>
