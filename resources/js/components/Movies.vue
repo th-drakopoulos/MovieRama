@@ -1,6 +1,6 @@
 <template>
   <div>
-    <SortBar @change-sort="changeSort" />
+    <SortBar class="mb-4" @change-sort="changeSort" />
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div

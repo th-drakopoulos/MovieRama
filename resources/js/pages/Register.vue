@@ -2,10 +2,6 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-8">
-        <div class="alert alert-danger" role="alert" v-if="error !== null">
-          {{ error }}
-        </div>
-
         <div class="card card-default">
           <div class="card-header">Register</div>
           <div class="card-body">
@@ -17,13 +13,22 @@
                 <div class="col-md-6">
                   <input
                     id="name"
-                    type="email"
+                    type="text"
                     class="form-control"
                     v-model="name"
                     required
                     autofocus
                     autocomplete="off"
+                    @keydown="errors = null"
+                    :class="[{ 'is-invalid': this.errorFor('name') }]"
                   />
+                  <div
+                    class="text-danger"
+                    v-for="(error, index) in this.errorFor('name')"
+                    :key="'name' + index"
+                  >
+                    {{ error }}
+                  </div>
                 </div>
               </div>
 
@@ -40,7 +45,16 @@
                     required
                     autofocus
                     autocomplete="off"
+                    @keydown="errors = null"
+                    :class="[{ 'is-invalid': this.errorFor('email') }]"
                   />
+                  <div
+                    class="text-danger"
+                    v-for="(error, index) in this.errorFor('email')"
+                    :key="'email' + index"
+                  >
+                    {{ error }}
+                  </div>
                 </div>
               </div>
 
@@ -58,7 +72,16 @@
                     v-model="password"
                     required
                     autocomplete="off"
+                    @keydown="errors = null"
+                    :class="[{ 'is-invalid': this.errorFor('password') }]"
                   />
+                  <div
+                    class="text-danger"
+                    v-for="(error, index) in this.errorFor('password')"
+                    :key="'password' + index"
+                  >
+                    {{ error }}
+                  </div>
                 </div>
               </div>
 
@@ -71,7 +94,7 @@
                 <div class="col-md-6">
                   <input
                     id="password_confirm"
-                    type="password_confirm"
+                    type="password"
                     class="form-control"
                     v-model="password_confirm"
                     required
@@ -85,7 +108,8 @@
                   <button
                     type="submit"
                     class="btn btn-primary"
-                    @click="handleSubmit"
+                    @click.prevent="tryToRegister"
+                    :disabled="!canRegister || tryingToRegister || hasErrors"
                   >
                     Register
                   </button>
@@ -107,37 +131,61 @@ export default {
       email: '',
       password: '',
       password_confirm: '',
-      error: null
+      errors: null,
+      tryingToRegister: false,
+      status
+    }
+  },
+  computed: {
+    canRegister() {
+      return this.name !== '' && this.email !== '' && this.password !== ''
+    },
+    hasErrors() {
+      return this.status === 422 && this.errors !== null
     }
   },
   methods: {
-    handleSubmit(e) {
-      e.preventDefault()
+    async tryToRegister(e) {
+      this.tryingToRegister = true
+      this.errors = null
       if (this.password.length > 0) {
-        axios.get('/sanctum/csrf-cookie').then((response) => {
-          axios
-            .post('api/register', {
+        const cookie = await axios.get('/sanctum/csrf-cookie')
+        if (cookie) {
+          try {
+            const response = await axios.post('api/register', {
               name: this.name,
               email: this.email,
-              password: this.password
+              password: this.password,
+              password_confirmation: this.password_confirm
             })
-            .then((response) => {
+
+            if (response) {
+              this.status = response.status
               if (response.data.success) {
                 window.location.href = '/login'
-              } else {
-                this.error = response.data.message
               }
-            })
-            .catch(function (error) {
-              console.error(error)
-            })
-        })
+            } else {
+              console.log('Error Response is' + response)
+              this.errors = response.data.message
+            }
+          } catch (error) {
+            if (error.response.status === 422) {
+              this.errors = error.response.data.errors
+            }
+            this.status = error.response.status
+          } finally {
+            this.tryingToRegister = false
+          }
+        }
       }
+    },
+    errorFor(field) {
+      return this.hasErrors && this.errors[field] ? this.errors[field] : null
     }
   },
   beforeRouteEnter(to, from, next) {
     if (window.Laravel.isLoggedin) {
-      return next('dashboard')
+      return next('/')
     }
     next()
   }
