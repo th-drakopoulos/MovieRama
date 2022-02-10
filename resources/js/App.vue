@@ -1,7 +1,16 @@
 <template>
   <div class="container mt-2 bg-white vh-100 mb-3">
     <Navbar @logout="logout" :isLoggedIn="isLoggedIn" />
-    <router-view />
+    <div class="row mb-3" v-if="twoColumns">
+      <div class="col-md-8">
+        <router-view />
+      </div>
+      <div class="col-md-4"></div>
+    </div>
+    <div class="row mb-3" v-else>
+      <router-view />
+    </div>
+
     <br />
   </div>
 </template>
@@ -20,10 +29,16 @@ export default {
       movies: null
     }
   },
+  computed: {
+    twoColumns() {
+      return !(this.$route.name === 'login' || this.$route.name === 'register')
+    }
+  },
   created() {
     if (window.Laravel.isLoggedin) {
       this.isLoggedIn = true
     }
+    console.log(this.$route.params)
   },
   methods: {
     logout(e) {

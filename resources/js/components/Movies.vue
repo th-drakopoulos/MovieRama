@@ -23,7 +23,7 @@
               <span>{{ fromNow(movie.created_at) }}</span>
             </div>
           </div>
-          <div class="card-text mb-2">{{ movie.description }}</div>
+          <div class="card-text mb-3">{{ movie.description }}</div>
           <div class="card-text" v-if="movie.likes > 0 || movie.hates > 0">
             {{ movie.likes }} likes | {{ movie.hates }} hates
           </div>
