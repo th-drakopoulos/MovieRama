@@ -2,10 +2,10 @@
   <nav class="navbar navbar-blue mb-3">
     <!-- for logged-in user-->
     <div class="container-fluid" v-if="isLoggedIn">
-      <router-link to="/" class="navbar-brand h1">MovieRama</router-link>
+      <router-link to="/" class="nav-item nav-link h1">MovieRama</router-link>
       <div class="d-flex">
         <router-link to="/movies" class="nav-item nav-link">Movies</router-link>
-        <a class="nav-item nav-link" @click="logout">Logout</a>
+        <a class="nav-item nav-link" @click="logout($event)">Logout</a>
       </div>
     </div>
     <!-- for non-logged user-->
@@ -31,8 +31,8 @@ export default {
     }
   },
   methods: {
-    logout() {
-      this.$emit('logout')
+    logout(event) {
+      this.$emit('logout', event)
     }
   }
 }

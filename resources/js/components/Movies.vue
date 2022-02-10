@@ -1,21 +1,25 @@
 <template>
   <div>
-    <div
-      class="card mb-3"
-      v-for="(movie, index) in movies"
-      :key="'movie-' + index"
-    >
-      <div class="card-body">
-        <h3 class="card-title">
-          {{ movie.title }}
-        </h3>
-        <div class="card-text mb-2">
-          Posted by {{ movie.user_name }}
-          {{ fromNow(movie.created_at) }}
-        </div>
-        <div class="card-text mb-2">{{ movie.description }}</div>
-        <div class="card-text" v-if="movie.likes > 0 || movie.hates > 0">
-          {{ movie.likes }} likes | {{ movie.hates }} hates
+    <SortBar />
+    <div v-if="loading">Loading...</div>
+    <div v-else>
+      <div
+        class="card mb-3"
+        v-for="(movie, index) in movies"
+        :key="'movie-' + index"
+      >
+        <div class="card-body">
+          <h3 class="card-title">
+            {{ movie.title }}
+          </h3>
+          <div class="card-text mb-2">
+            Posted by {{ movie.user_name }}
+            {{ fromNow(movie.created_at) }}
+          </div>
+          <div class="card-text mb-2">{{ movie.description }}</div>
+          <div class="card-text" v-if="movie.likes > 0 || movie.hates > 0">
+            {{ movie.likes }} likes | {{ movie.hates }} hates
+          </div>
         </div>
       </div>
     </div>
@@ -23,9 +27,13 @@
 </template>
 
 <script>
+import SortBar from './TheSortBar.vue'
 import axios from 'axios'
 import moment from 'moment'
 export default {
+  components: {
+    SortBar
+  },
   data() {
     return {
       loading: false,
@@ -62,12 +70,12 @@ export default {
     fromNow(value) {
       return moment(value).fromNow()
     }
-  },
-  beforeRouteEnter(to, from, next) {
-    if (!window.Laravel.isLoggedin) {
-      window.location.href = '/'
-    }
-    next()
   }
+  // beforeRouteEnter(to, from, next) {
+  //   if (!window.Laravel.isLoggedin) {
+  //     window.location.href = '/'
+  //   }
+  //   next()
+  // }
 }
 </script>

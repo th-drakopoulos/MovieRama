@@ -4,11 +4,6 @@
     <a class="nav-item nav-link" @click="testFunction">Likes</a>
     <a class="nav-item nav-link" @click="testFunction">Hates</a>
     <a class="nav-item nav-link" @click="testFunction">Dates</a>
-    <!-- <router-link to="/login" class="nav-item nav-link"
-                >Likes</router-link
-            > -->
-    <router-link to="/register" class="nav-item nav-link">Hates </router-link>
-    <router-link to="/register" class="nav-item nav-link">Dates </router-link>
   </div>
 </template>
 

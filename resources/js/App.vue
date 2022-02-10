@@ -1,14 +1,20 @@
 <template>
   <div class="container mt-2 bg-white">
-    <Navbar @logout="logout" />
-    <SortBar />
+    <Navbar @logout="logout" :isLoggedIn="isLoggedIn" />
+
+    <!-- <div class="row">
+      <div class="col-md-8">
+        <Movies />
+      </div>
+      <div class="col-md-4"></div>
+    </div> -->
     <router-view />
   </div>
 </template>
 
 <script>
 import Navbar from './components/TheNavBar'
-import SortBar from './components/TheSortBar'
+
 export default {
   name: 'App',
   components: {
@@ -17,7 +23,8 @@ export default {
   },
   data() {
     return {
-      isLoggedIn: false
+      isLoggedIn: false,
+      movies: null
     }
   },
   created() {
@@ -27,7 +34,6 @@ export default {
   },
   methods: {
     logout(e) {
-      console.log('ss')
       e.preventDefault()
       this.$axios.get('/sanctum/csrf-cookie').then((response) => {
         this.$axios

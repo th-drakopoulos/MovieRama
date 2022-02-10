@@ -86,7 +86,7 @@ export default {
             .then((response) => {
               console.log(response.data)
               if (response.data.success) {
-                this.$router.go('/dashboard')
+                this.$router.go('/')
               } else {
                 this.error = response.data.message
               }
@@ -100,7 +100,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     if (window.Laravel.isLoggedin) {
-      return next('dashboard')
+      return next('/')
     }
     next()
   }
