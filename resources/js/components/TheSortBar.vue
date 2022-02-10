@@ -20,7 +20,7 @@ export default {
     },
     changeSortDates() {
       console.log('Sort dates child')
-      this.$emit('change-sort', 'dates')
+      this.$emit('change-sort', 'created_at')
     }
   }
 }

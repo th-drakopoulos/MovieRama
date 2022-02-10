@@ -15,9 +15,11 @@
           <div class="card-text mb-2">
             <div class="d-flex flex-row align-items-center">
               <span>Posted by</span>
-              <a class="nav-item nav-link" @click="testFunction">{{
-                movie.user_name
-              }}</a>
+              <a
+                class="nav-item nav-link"
+                @click="movieByUser(movie.user_id)"
+                >{{ movie.user_name }}</a
+              >
               <span>{{ fromNow(movie.created_at) }}</span>
             </div>
           </div>
@@ -89,8 +91,18 @@ export default {
         this.loading = false
       }
     },
-    testFunction() {
-      console.log('Nothing')
+    async movieByUser(id) {
+      try {
+        this.loading = true
+        const response = (await axios.get(`/api/movie-by-user/${id}`)).data
+        if (response) {
+          this.movies = response.data
+        }
+      } catch (error) {
+        console.warn(error)
+      } finally {
+        this.loading = false
+      }
     }
   }
   // beforeRouteEnter(to, from, next) {

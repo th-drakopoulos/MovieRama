@@ -10,7 +10,7 @@
           <div class="card-header">Register</div>
           <div class="card-body">
             <form>
-              <div class="form-group row">
+              <div class="form-group row mb-3">
                 <label for="name" class="col-sm-4 col-form-label text-md-right"
                   >Name</label
                 >
@@ -27,7 +27,7 @@
                 </div>
               </div>
 
-              <div class="form-group row">
+              <div class="form-group row mb-3">
                 <label for="email" class="col-sm-4 col-form-label text-md-right"
                   >E-Mail Address</label
                 >
@@ -44,7 +44,7 @@
                 </div>
               </div>
 
-              <div class="form-group row">
+              <div class="form-group row mb-3">
                 <label
                   for="password"
                   class="col-md-4 col-form-label text-md-right"
@@ -56,6 +56,24 @@
                     type="password"
                     class="form-control"
                     v-model="password"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group row mb-3">
+                <label
+                  for="password_confirm"
+                  class="col-md-4 col-form-label text-md-right"
+                  >Confirm</label
+                >
+                <div class="col-md-6">
+                  <input
+                    id="password_confirm"
+                    type="password_confirm"
+                    class="form-control"
+                    v-model="password_confirm"
                     required
                     autocomplete="off"
                   />
@@ -88,6 +106,7 @@ export default {
       name: '',
       email: '',
       password: '',
+      password_confirm: '',
       error: null
     }
   },

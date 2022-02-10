@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\MovieByUserController;
 use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,7 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::get('/movies/{sort?}', [MovieController::class, 'index']);
+Route::get('/movie-by-user/{id}', MovieByUserController::class);
 Route::middleware('auth:sanctum')->post('add', [MovieController::class, 'add']);
 
 // Route::group(['prefix' => 'movies', 'middleware' => 'auth:sanctum'], function () {
