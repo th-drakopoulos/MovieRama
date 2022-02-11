@@ -24,8 +24,20 @@
             </div>
           </div>
           <div class="card-text mb-3">{{ movie.description }}</div>
-          <div class="card-text" v-if="movie.likes > 0 || movie.hates > 0">
-            {{ movie.likes }} likes | {{ movie.hates }} hates
+          <div v-if="user">
+            <div class="card-text d-flex align-items-center">
+              <a class="nav-item nav-link px-0 py-0">{{ movie.likes }} likes</a>
+              <span class="mx-1">|</span>
+              <a class="nav-item nav-link px-0 py-0">{{ movie.hates }} hates</a>
+            </div>
+          </div>
+          <div v-else>
+            <div
+              class="card-text card-text d-flex align-items-center"
+              v-if="movie.likes > 0 || movie.hates > 0"
+            >
+              {{ movie.likes }} likes | {{ movie.hates }} hates
+            </div>
           </div>
         </div>
       </div>
@@ -46,6 +58,11 @@ export default {
       loading: false,
       movies: null,
       sortBy: ''
+    }
+  },
+  computed: {
+    user() {
+      return window.Laravel.user ? window.Laravel.user : ''
     }
   },
   async created() {
