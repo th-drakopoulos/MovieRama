@@ -8,7 +8,7 @@
       <div class="col-md-4"></div>
     </div>
     <div class="row mb-3" v-else>
-      <router-view />
+      <router-view :key="path" />
     </div>
 
     <br />
@@ -26,12 +26,18 @@ export default {
   data() {
     return {
       isLoggedIn: false,
-      movies: null
+      movies: null,
+      staticRoutes: []
     }
   },
   computed: {
     twoColumns() {
       return !(this.$route.name === 'login' || this.$route.name === 'register')
+    },
+    path() {
+      return this.staticRoutes.includes(this.$route.name)
+        ? 'static'
+        : this.$route.fullPath
     }
   },
   created() {
