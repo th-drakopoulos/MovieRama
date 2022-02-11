@@ -23,7 +23,16 @@
                     required
                     autofocus
                     autocomplete="off"
+                    @keydown="errors = null"
+                    :class="[{ 'is-invalid': errorFor('email') }]"
                   />
+                  <div
+                    class="text-danger"
+                    v-for="(error, index) in errorFor('email')"
+                    :key="'email' + index"
+                  >
+                    {{ error }}
+                  </div>
                 </div>
               </div>
 
@@ -41,7 +50,16 @@
                     v-model="password"
                     required
                     autocomplete="off"
+                    @keydown="errors = null"
+                    :class="[{ 'is-invalid': errorFor('password') }]"
                   />
+                  <div
+                    class="text-danger"
+                    v-for="(error, index) in errorFor('password')"
+                    :key="'password' + index"
+                  >
+                    {{ error }}
+                  </div>
                 </div>
               </div>
 
@@ -50,7 +68,8 @@
                   <button
                     type="submit"
                     class="btn btn-primary"
-                    @click="handleSubmit"
+                    @click.prevent="tryToLogin"
+                    :disabled="!canLogin || tryingToLogin || hasErrors"
                   >
                     Login
                   </button>
@@ -65,37 +84,59 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
       email: '',
       password: '',
-      error: null
+      error: null,
+      errors: null,
+      tryingToLogin: false,
+      status: ''
+    }
+  },
+  computed: {
+    canLogin() {
+      return this.email !== '' && this.password !== ''
+    },
+    hasErrors() {
+      return this.status === 422 && this.errors !== null
     }
   },
   methods: {
-    handleSubmit(e) {
-      e.preventDefault()
+    async tryToLogin() {
+      this.tryingToLogin = true
+      this.errors = null
       if (this.password.length > 0) {
-        this.$axios.get('/sanctum/csrf-cookie').then((response) => {
-          this.$axios
-            .post('api/login', {
+        const cookie = await axios.get('/sanctum/csrf-cookie')
+        if (cookie) {
+          try {
+            const response = await axios.post('api/login', {
               email: this.email,
               password: this.password
             })
-            .then((response) => {
-              console.log(response.data)
+            if (response) {
+              this.status = response.status
               if (response.data.success) {
                 this.$router.go('/')
               } else {
                 this.error = response.data.message
               }
-            })
-            .catch(function (error) {
-              console.error(error)
-            })
-        })
+            }
+          } catch (error) {
+            if (error.response.status === 422) {
+              this.errors = error.response.data.errors
+            }
+            this.status = error.response.status
+          } finally {
+            this.tryingToLogin = false
+          }
+        }
       }
+    },
+    errorFor(field) {
+      return this.hasErrors && this.errors[field] ? this.errors[field] : null
     }
   },
   beforeRouteEnter(to, from, next) {

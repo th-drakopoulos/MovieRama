@@ -20,11 +20,11 @@
                     autofocus
                     autocomplete="off"
                     @keydown="errors = null"
-                    :class="[{ 'is-invalid': this.errorFor('name') }]"
+                    :class="[{ 'is-invalid': errorFor('name') }]"
                   />
                   <div
                     class="text-danger"
-                    v-for="(error, index) in this.errorFor('name')"
+                    v-for="(error, index) in errorFor('name')"
                     :key="'name' + index"
                   >
                     {{ error }}
@@ -46,11 +46,11 @@
                     autofocus
                     autocomplete="off"
                     @keydown="errors = null"
-                    :class="[{ 'is-invalid': this.errorFor('email') }]"
+                    :class="[{ 'is-invalid': errorFor('email') }]"
                   />
                   <div
                     class="text-danger"
-                    v-for="(error, index) in this.errorFor('email')"
+                    v-for="(error, index) in errorFor('email')"
                     :key="'email' + index"
                   >
                     {{ error }}
@@ -73,11 +73,11 @@
                     required
                     autocomplete="off"
                     @keydown="errors = null"
-                    :class="[{ 'is-invalid': this.errorFor('password') }]"
+                    :class="[{ 'is-invalid': errorFor('password') }]"
                   />
                   <div
                     class="text-danger"
-                    v-for="(error, index) in this.errorFor('password')"
+                    v-for="(error, index) in errorFor('password')"
                     :key="'password' + index"
                   >
                     {{ error }}
@@ -124,6 +124,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -133,7 +134,7 @@ export default {
       password_confirm: '',
       errors: null,
       tryingToRegister: false,
-      status
+      status: ''
     }
   },
   computed: {
@@ -145,7 +146,7 @@ export default {
     }
   },
   methods: {
-    async tryToRegister(e) {
+    async tryToRegister() {
       this.tryingToRegister = true
       this.errors = null
       if (this.password.length > 0) {
@@ -165,7 +166,6 @@ export default {
                 window.location.href = '/login'
               }
             } else {
-              console.log('Error Response is' + response)
               this.errors = response.data.message
             }
           } catch (error) {
