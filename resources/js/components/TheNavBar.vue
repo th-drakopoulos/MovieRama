@@ -3,8 +3,8 @@
     <!-- for logged-in user-->
     <div class="container-fluid" v-if="isLoggedIn">
       <router-link to="/" class="nav-item nav-link h1">MovieRama</router-link>
-      <div class="d-flex">
-        <router-link to="/movies" class="nav-item nav-link">Movies</router-link>
+      <div class="d-flex align-items-center">
+        <span>Welcome back {{ user.name }}</span>
         <a class="nav-item nav-link" @click="logout($event)">Logout</a>
       </div>
     </div>
@@ -23,11 +23,17 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   props: {
     isLoggedIn: {
       type: Boolean,
       default: false
+    }
+  },
+  computed: {
+    user() {
+      return window.Laravel.user ? window.Laravel.user : ''
     }
   },
   methods: {
