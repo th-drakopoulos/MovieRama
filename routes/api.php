@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\MovieByUserController;
 use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +24,7 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 Route::get('/movies/{sort?}', [MovieController::class, 'index']);
 Route::get('/movie-by-user/{id}', MovieByUserController::class);
 Route::middleware('auth:sanctum')->post('/movies', [MovieController::class, 'store']);
-
-// Route::group(['prefix' => 'movies', 'middleware' => 'auth:sanctum'], function () {
-//     Route::get('/', [MovieController::class, 'index']);
-//     Route::post('add', [MovieController::class, 'add']);
-// });
+Route::middleware('auth:sanctum')->post('/movies/{id}/likes', [MovieController::class, 'like']);
+Route::middleware('auth:sanctum')->post('/movies/{id}/hates', [MovieController::class, 'hate']);
+Route::middleware('auth:sanctum')->get('/ratings', [RatingController::class, 'show']);
+Route::middleware('auth:sanctum')->post('/ratings/{movieId}', [RatingController::class, 'store']);

@@ -28,9 +28,17 @@
           <div class="card-text mb-3">{{ movie.description }}</div>
           <div v-if="user && canVoteForMovie(movie.user_id)">
             <div class="card-text d-flex align-items-center">
-              <a class="nav-item nav-link px-0 py-0">{{ movie.likes }} likes</a>
+              <a
+                class="nav-item nav-link px-0 py-0"
+                @click="likeMovie(movie.id)"
+                >{{ movie.likes }} likes</a
+              >
               <span class="mx-1">|</span>
-              <a class="nav-item nav-link px-0 py-0">{{ movie.hates }} hates</a>
+              <a
+                class="nav-item nav-link px-0 py-0"
+                @click="hateMovie(movie.id)"
+                >{{ movie.hates }} hates</a
+              >
             </div>
           </div>
           <div v-else>
@@ -121,6 +129,28 @@ export default {
         console.warn(error)
       } finally {
         this.loading = false
+      }
+    },
+    async likeMovie(id) {
+      try {
+        const response = await axios.post(`/api/movies/${id}/likes`)
+        if (response) {
+          // TODO: update the ratings table
+          return
+        }
+      } catch (error) {
+        console.warn(error)
+      }
+    },
+    async hateMovie(id) {
+      try {
+        const response = await axios.post(`/api/movies/${id}/hates`)
+        if (response) {
+          // TODO: update the ratings table
+          return
+        }
+      } catch (error) {
+        console.warn(error)
       }
     },
     canVoteForMovie(authorId) {

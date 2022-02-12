@@ -35,4 +35,28 @@ class MovieController extends Controller
         return $movie;
 
     }
+
+    public function like($id, Request $request)
+    {
+        $movie = Movie::findOrFail($id);
+
+        $numberOfLikes = $movie->likes;
+        $numberOfLikes++;
+        $movie->likes = $numberOfLikes;
+        $movie->save();
+
+        return $movie;
+    }
+
+    public function hate($id, Request $request)
+    {
+        $movie = Movie::findOrFail($id);
+
+        $numberOfHates = $movie->hates;
+        $numberOfHates++;
+        $movie->hates = $numberOfHates;
+        $movie->save();
+
+        return $movie;
+    }
 }
