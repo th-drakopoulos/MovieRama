@@ -8,7 +8,11 @@
         v-for="(movie, index) in movies"
         :key="'movie-' + index"
       >
-        <Movie :movie="movie" @movie-by-user="movieByUser" />
+        <Movie
+          :movie="movie"
+          @movie-by-user="movieByUser"
+          :movie-has-rating="movieHasRatingByUser(movie.id)"
+        />
       </div>
     </div>
   </div>
@@ -27,7 +31,8 @@ export default {
     return {
       loading: false,
       movies: null,
-      sortBy: ''
+      sortBy: '',
+      ratings: null
     }
   },
   async created() {
@@ -36,6 +41,10 @@ export default {
       const response = (await axios.get(`/api/movies`)).data
       if (response) {
         this.movies = response.data
+      }
+      const ratingsResponse = (await axios.get(`/api/ratings-by-user`)).data
+      if (ratingsResponse) {
+        this.ratings = ratingsResponse.data
       }
     } catch (error) {
       console.warn(error)
@@ -82,6 +91,19 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    movieHasRatingByUser(id) {
+      let found = null
+      if (this.ratings) {
+        this.ratings.forEach((element) => {
+          if (element.movie_id === id) {
+            found = element
+            return true
+          }
+        })
+      }
+
+      return found
     }
   }
   // beforeRouteEnter(to, from, next) {

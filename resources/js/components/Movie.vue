@@ -15,13 +15,33 @@
     <div class="card-text mb-3">{{ movie.description }}</div>
     <div v-if="user && canVoteForMovie(movie.user_id)">
       <div class="card-text d-flex align-items-center">
-        <a class="nav-item nav-link px-0 py-0" @click="likeMovie(movie.id)"
-          >{{ movie.likes }} likes</a
-        >
-        <span class="mx-1">|</span>
-        <a class="nav-item nav-link px-0 py-0" @click="hateMovie(movie.id)"
-          >{{ movie.hates }} hates</a
-        >
+        <div class="d-inline-flex flex-grow-1">
+          <span v-if="like">{{ totalLikes }} likes</span>
+          <a
+            v-else
+            class="nav-item nav-link px-0 py-0"
+            @click="likeMovie(movie.id)"
+            >{{ totalLikes }} likes</a
+          >
+          <span class="mx-1">|</span>
+          <span v-if="hate">{{ totalHates }} hates</span>
+          <a
+            v-else
+            class="nav-item nav-link px-0 py-0"
+            @click="hateMovie(movie.id)"
+            >{{ totalHates }} hates</a
+          >
+        </div>
+        <div v-if="hasRating" class="d-flex align-items-center">
+          <span>You {{ like ? 'like' : 'hate' }} this movie</span>
+          <a
+            v-if="like"
+            class="nav-item nav-link"
+            @click="unlikeMovie(movie.id)"
+            >Unlike</a
+          >
+          <a v-else class="nav-item nav-link" @click="unhateMovie">Unhate</a>
+        </div>
       </div>
     </div>
     <div v-else>
@@ -42,6 +62,22 @@ export default {
     movie: {
       type: Object,
       default: null
+    },
+    movieHasRating: {
+      type: Object,
+      default: null
+    }
+  },
+  data() {
+    return {
+      hasRating: this.movieHasRating ? true : false,
+      rating: this.movieHasRating ? this.movieHasRating.rating : 0,
+      like:
+        this.movieHasRating && this.movieHasRating.rating === 1 ? true : false,
+      hate:
+        this.movieHasRating && this.movieHasRating.rating === -1 ? true : false,
+      totalLikes: this.movie?.likes,
+      totalHates: this.movie?.hates
     }
   },
   computed: {
@@ -54,8 +90,18 @@ export default {
       try {
         const response = await axios.post(`/api/movies/${id}/likes`)
         if (response) {
-          // TODO: update the ratings table
-          return
+          // check if already has rating
+          const hasRatingResponse = await axios.get(`/api/ratings/${id}`)
+          if (hasRatingResponse && !hasRatingResponse.data.success) {
+            const rating = await axios.post(`/api/ratings/${id}`, {
+              rating: 1
+            })
+            if (rating) {
+              this.totalLikes++
+              this.like = true
+              this.hasRating = true
+            }
+          }
         }
       } catch (error) {
         console.warn(error)
@@ -65,13 +111,25 @@ export default {
       try {
         const response = await axios.post(`/api/movies/${id}/hates`)
         if (response) {
-          // TODO: update the ratings table
-          return
+          // check if already has rating
+          const hasRatingResponse = await axios.get(`/api/ratings/${id}`)
+          if (hasRatingResponse && !hasRatingResponse.data.success) {
+            const rating = await axios.post(`/api/ratings/${id}`, {
+              rating: -1
+            })
+            if (rating) {
+              this.totalHates++
+              this.hate = true
+              this.hasRating = true
+            }
+          }
         }
       } catch (error) {
         console.warn(error)
       }
     },
+    async unlikeMovie() {},
+    async unhateMovie() {},
     fromNow(value) {
       return moment(value).fromNow()
     },

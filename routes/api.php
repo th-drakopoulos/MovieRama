@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Api\HasRatingByMovieIdController;
 use App\Http\Controllers\Api\MovieByUserController;
 use App\Http\Controllers\Api\MovieController;
 use App\Http\Controllers\Api\RatingController;
+use App\Http\Controllers\Api\RatingsByUserController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +29,6 @@ Route::middleware('auth:sanctum')->post('/movies', [MovieController::class, 'sto
 Route::middleware('auth:sanctum')->post('/movies/{id}/likes', [MovieController::class, 'like']);
 Route::middleware('auth:sanctum')->post('/movies/{id}/hates', [MovieController::class, 'hate']);
 Route::middleware('auth:sanctum')->get('/ratings', [RatingController::class, 'show']);
+Route::middleware('auth:sanctum')->get('/ratings/{movieId?}', HasRatingByMovieIdController::class);
+Route::middleware('auth:sanctum')->get('/ratings-by-user', RatingsByUserController::class);
 Route::middleware('auth:sanctum')->post('/ratings/{movieId}', [RatingController::class, 'store']);
