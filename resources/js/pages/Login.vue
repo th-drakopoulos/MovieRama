@@ -108,31 +108,29 @@ export default {
     async tryToLogin() {
       this.tryingToLogin = true
       this.errors = null
-      if (this.password.length > 0) {
+      try {
         const cookie = await axios.get('/sanctum/csrf-cookie')
         if (cookie) {
-          try {
-            const response = await axios.post('api/login', {
-              email: this.email,
-              password: this.password
-            })
-            if (response) {
-              this.status = response.status
-              if (response.data.success) {
-                this.$router.go('/')
-              } else {
-                this.error = response.data.message
-              }
+          const response = await axios.post('api/login', {
+            email: this.email,
+            password: this.password
+          })
+          if (response) {
+            this.status = response.status
+            if (response.data.success) {
+              this.$router.go('/')
+            } else {
+              this.error = response.data.message
             }
-          } catch (error) {
-            if (error.response.status === 422) {
-              this.errors = error.response.data.errors
-            }
-            this.status = error.response.status
-          } finally {
-            this.tryingToLogin = false
           }
         }
+      } catch (error) {
+        if (error.response.status === 422) {
+          this.errors = error.response.data.errors
+        }
+        this.status = error.response.status
+      } finally {
+        this.tryingToLogin = false
       }
     },
     errorFor(field) {

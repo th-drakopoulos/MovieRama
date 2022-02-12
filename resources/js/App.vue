@@ -31,6 +31,7 @@
 <script>
 import Navbar from './components/TheNavBar'
 import MovieEditor from './components/MovieEditor'
+import axios from 'axios'
 export default {
   name: 'App',
   components: {
@@ -65,22 +66,22 @@ export default {
     console.log(this.$route.params)
   },
   methods: {
-    logout(e) {
-      e.preventDefault()
-      this.$axios.get('/sanctum/csrf-cookie').then((response) => {
-        this.$axios
-          .post('/api/logout')
-          .then((response) => {
+    async logout() {
+      try {
+        const cookie = await axios.get('/sanctum/csrf-cookie')
+        if (cookie) {
+          const response = await axios.post('/api/logout')
+          if (response) {
             if (response.data.success) {
               window.location.href = '/'
             } else {
               console.log(response)
             }
-          })
-          .catch(function (error) {
-            console.error(error)
-          })
-      })
+          }
+        }
+      } catch (error) {
+        console.error(error)
+      }
     }
   }
 }

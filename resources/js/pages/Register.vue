@@ -149,34 +149,32 @@ export default {
     async tryToRegister() {
       this.tryingToRegister = true
       this.errors = null
-      if (this.password.length > 0) {
+      try {
         const cookie = await axios.get('/sanctum/csrf-cookie')
         if (cookie) {
-          try {
-            const response = await axios.post('api/register', {
-              name: this.name,
-              email: this.email,
-              password: this.password,
-              password_confirmation: this.password_confirm
-            })
+          const response = await axios.post('api/register', {
+            name: this.name,
+            email: this.email,
+            password: this.password,
+            password_confirmation: this.password_confirm
+          })
 
-            if (response) {
-              this.status = response.status
-              if (response.data.success) {
-                window.location.href = '/login'
-              }
-            } else {
-              this.errors = response.data.message
+          if (response) {
+            this.status = response.status
+            if (response.data.success) {
+              window.location.href = '/login'
             }
-          } catch (error) {
-            if (error.response.status === 422) {
-              this.errors = error.response.data.errors
-            }
-            this.status = error.response.status
-          } finally {
-            this.tryingToRegister = false
+          } else {
+            this.errors = response.data.message
           }
         }
+      } catch (error) {
+        if (error.response.status === 422) {
+          this.errors = error.response.data.errors
+        }
+        this.status = error.response.status
+      } finally {
+        this.tryingToRegister = false
       }
     },
     errorFor(field) {
