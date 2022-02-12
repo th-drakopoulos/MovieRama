@@ -18,7 +18,9 @@
               <a
                 class="nav-item nav-link"
                 @click="movieByUser(movie.user_id)"
-                >{{ movie.user_name }}</a
+                >{{
+                  showMovieAuthorName(movie.user_id) ? movie.user_name : 'You'
+                }}</a
               >
               <span>{{ fromNow(movie.created_at) }}</span>
             </div>
@@ -122,6 +124,13 @@ export default {
       }
     },
     canVoteForMovie(authorId) {
+      return authorId !== this.user.id
+    },
+    showMovieAuthorName(authorId) {
+      if (!this.user) {
+        return true
+      }
+
       return authorId !== this.user.id
     }
   }
