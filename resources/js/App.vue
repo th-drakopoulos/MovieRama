@@ -5,7 +5,20 @@
       <div class="col-md-8">
         <router-view />
       </div>
-      <div class="col-md-4"></div>
+      <div class="col-md-4 text-center">
+        <button
+          v-if="user && !showEditor"
+          class="btn btn-outline-primary rounded-pill"
+          @click="showEditor = !showEditor"
+        >
+          New Movie
+        </button>
+        <MovieEditor
+          v-if="showEditor"
+          :show-editor="showEditor"
+          @close-editor="showEditor = false"
+        />
+      </div>
     </div>
     <div class="row mb-3" v-else>
       <router-view :key="path" />
@@ -17,17 +30,19 @@
 
 <script>
 import Navbar from './components/TheNavBar'
-
+import MovieEditor from './components/MovieEditor'
 export default {
   name: 'App',
   components: {
-    Navbar
+    Navbar,
+    MovieEditor
   },
   data() {
     return {
       isLoggedIn: false,
       movies: null,
-      staticRoutes: []
+      staticRoutes: [],
+      showEditor: false
     }
   },
   computed: {
@@ -38,6 +53,9 @@ export default {
       return this.staticRoutes.includes(this.$route.name)
         ? 'static'
         : this.$route.fullPath
+    },
+    user() {
+      return window.Laravel.user ? window.Laravel.user : ''
     }
   },
   created() {

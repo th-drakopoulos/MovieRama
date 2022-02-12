@@ -17,8 +17,8 @@ class CreateMoviesTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->integer('likes');
-            $table->integer('hates');
+            $table->integer('likes')->default(0);
+            $table->integer('hates')->default(0);
             $table->unsignedBigInteger('user_id')->index();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

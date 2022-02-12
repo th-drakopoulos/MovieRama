@@ -22,7 +22,7 @@ Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanct
 
 Route::get('/movies/{sort?}', [MovieController::class, 'index']);
 Route::get('/movie-by-user/{id}', MovieByUserController::class);
-Route::middleware('auth:sanctum')->post('add', [MovieController::class, 'add']);
+Route::middleware('auth:sanctum')->post('/movies', [MovieController::class, 'store']);
 
 // Route::group(['prefix' => 'movies', 'middleware' => 'auth:sanctum'], function () {
 //     Route::get('/', [MovieController::class, 'index']);
