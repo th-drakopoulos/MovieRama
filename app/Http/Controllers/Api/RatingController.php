@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RatingResource;
 use App\Models\Rating;
 use Illuminate\Http\Request;
 
@@ -10,7 +11,7 @@ class RatingController extends Controller
 {
     public function show($id)
     {
-        return Rating::findOrFail($id);
+        return new RatingResource(Rating::findOrFail($id));
     }
 
     public function store($movieId, Request $request)
@@ -24,7 +25,7 @@ class RatingController extends Controller
         $rating->movie_id = $movieId;
         $rating->save();
 
-        return $rating;
+        return new RatingResource($rating);
 
     }
 }
