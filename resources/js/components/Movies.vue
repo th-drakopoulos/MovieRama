@@ -8,71 +8,26 @@
         v-for="(movie, index) in movies"
         :key="'movie-' + index"
       >
-        <div class="card-body">
-          <h3 class="card-title">
-            {{ movie.title }}
-          </h3>
-          <div class="card-text mb-2">
-            <div class="d-flex flex-row align-items-center">
-              <span>Posted by</span>
-              <a
-                class="nav-item nav-link"
-                @click="movieByUser(movie.user_id)"
-                >{{
-                  showMovieAuthorName(movie.user_id) ? movie.user_name : 'You'
-                }}</a
-              >
-              <span>{{ fromNow(movie.created_at) }}</span>
-            </div>
-          </div>
-          <div class="card-text mb-3">{{ movie.description }}</div>
-          <div v-if="user && canVoteForMovie(movie.user_id)">
-            <div class="card-text d-flex align-items-center">
-              <a
-                class="nav-item nav-link px-0 py-0"
-                @click="likeMovie(movie.id)"
-                >{{ movie.likes }} likes</a
-              >
-              <span class="mx-1">|</span>
-              <a
-                class="nav-item nav-link px-0 py-0"
-                @click="hateMovie(movie.id)"
-                >{{ movie.hates }} hates</a
-              >
-            </div>
-          </div>
-          <div v-else>
-            <div
-              class="card-text card-text d-flex align-items-center"
-              v-if="movie.likes > 0 || movie.hates > 0"
-            >
-              {{ movie.likes }} likes | {{ movie.hates }} hates
-            </div>
-          </div>
-        </div>
+        <Movie :movie="movie" @movie-by-user="movieByUser" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import SortBar from './TheSortBar.vue'
+import SortBar from './TheSortBar'
 import axios from 'axios'
-import moment from 'moment'
+import Movie from './Movie'
 export default {
   components: {
-    SortBar
+    SortBar,
+    Movie
   },
   data() {
     return {
       loading: false,
       movies: null,
       sortBy: ''
-    }
-  },
-  computed: {
-    user() {
-      return window.Laravel.user ? window.Laravel.user : ''
     }
   },
   async created() {
@@ -89,22 +44,19 @@ export default {
     }
   },
   methods: {
-    deleteBook(id) {
-      this.$axios.get('/sanctum/csrf-cookie').then((response) => {
-        this.$axios
-          .delete(`/api/books/delete/${id}`)
-          .then((response) => {
-            let i = this.books.map((item) => item.id).indexOf(id) // find index of your object
-            this.books.splice(i, 1)
-          })
-          .catch(function (error) {
-            console.error(error)
-          })
-      })
-    },
-    fromNow(value) {
-      return moment(value).fromNow()
-    },
+    // deleteBook(id) {
+    //   this.$axios.get('/sanctum/csrf-cookie').then((response) => {
+    //     this.$axios
+    //       .delete(`/api/books/delete/${id}`)
+    //       .then((response) => {
+    //         let i = this.books.map((item) => item.id).indexOf(id) // find index of your object
+    //         this.books.splice(i, 1)
+    //       })
+    //       .catch(function (error) {
+    //         console.error(error)
+    //       })
+    //   })
+    // },
     async changeSort(value) {
       try {
         this.loading = true
@@ -130,38 +82,6 @@ export default {
       } finally {
         this.loading = false
       }
-    },
-    async likeMovie(id) {
-      try {
-        const response = await axios.post(`/api/movies/${id}/likes`)
-        if (response) {
-          // TODO: update the ratings table
-          return
-        }
-      } catch (error) {
-        console.warn(error)
-      }
-    },
-    async hateMovie(id) {
-      try {
-        const response = await axios.post(`/api/movies/${id}/hates`)
-        if (response) {
-          // TODO: update the ratings table
-          return
-        }
-      } catch (error) {
-        console.warn(error)
-      }
-    },
-    canVoteForMovie(authorId) {
-      return authorId !== this.user.id
-    },
-    showMovieAuthorName(authorId) {
-      if (!this.user) {
-        return true
-      }
-
-      return authorId !== this.user.id
     }
   }
   // beforeRouteEnter(to, from, next) {

@@ -21,16 +21,6 @@ export const routes = [
     name: 'login',
     path: '/login',
     component: Login
-  },
-  // {
-  //   name: 'movies',
-  //   path: '/movies',
-  //   component: Movies
-  // },
-  {
-    name: 'addmovie',
-    path: '/movies/add',
-    component: AddMovie
   }
 ]
 
