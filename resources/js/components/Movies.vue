@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="card-text mb-3">{{ movie.description }}</div>
-          <div v-if="user">
+          <div v-if="user && canVoteForMovie(movie.user_id)">
             <div class="card-text d-flex align-items-center">
               <a class="nav-item nav-link px-0 py-0">{{ movie.likes }} likes</a>
               <span class="mx-1">|</span>
@@ -120,6 +120,9 @@ export default {
       } finally {
         this.loading = false
       }
+    },
+    canVoteForMovie(authorId) {
+      return authorId !== this.user.id
     }
   }
   // beforeRouteEnter(to, from, next) {

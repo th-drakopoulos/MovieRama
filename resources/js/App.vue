@@ -3,7 +3,7 @@
     <Navbar @logout="logout" :isLoggedIn="isLoggedIn" />
     <div class="row mb-3" v-if="twoColumns">
       <div class="col-md-8">
-        <router-view />
+        <router-view :key="path" />
       </div>
       <div class="col-md-4 text-center">
         <button
@@ -16,7 +16,7 @@
         <MovieEditor
           v-if="showEditor"
           :show-editor="showEditor"
-          @close-editor="showEditor = false"
+          @close-editor="closeEditor"
         />
       </div>
     </div>
@@ -63,7 +63,6 @@ export default {
     if (window.Laravel.isLoggedin) {
       this.isLoggedIn = true
     }
-    console.log(this.$route.params)
   },
   methods: {
     async logout() {
@@ -82,6 +81,10 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+    closeEditor() {
+      this.showEditor = false
+      this.$router.go('/movies')
     }
   }
 }
