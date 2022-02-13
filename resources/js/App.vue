@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-2 bg-white vh-100 mb-3">
+  <div class="container mt-2 bg-white mb-3">
     <Navbar @logout="logout" :isLoggedIn="isLoggedIn" />
     <div class="row mb-3" v-if="twoColumns">
       <div class="col-md-8">

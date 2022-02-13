@@ -100,6 +100,7 @@ export default {
           this.closeEditor()
         }
       } catch (error) {
+        this.errors = error.response.data.errors
       } finally {
         this.tryingToAddMovie = false
       }

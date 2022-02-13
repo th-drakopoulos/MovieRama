@@ -13,7 +13,7 @@ class MovieController extends Controller
     public function index($sort = null)
     {
         if ($sort) {
-            return MovieIndexResource::collection(Movie::with('user')->orderBy($sort)->get());
+            return MovieIndexResource::collection(Movie::with('user')->orderBy($sort, 'desc')->get());
         } else {
             return MovieIndexResource::collection(Movie::with('user')->get());
         }
@@ -23,7 +23,7 @@ class MovieController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title' => 'required',
+            'title' => 'required|unique:movies',
             'description' => 'required',
         ]);
 

@@ -15,7 +15,20 @@
     <div class="card-text mb-3">{{ movie.description }}</div>
     <div v-if="user && canVoteForMovie(movie.user_id)">
       <div class="card-text d-flex align-items-center">
-        <div class="d-inline-flex flex-grow-1">
+        <div
+          v-if="totalLikes === 0 && totalHates === 0"
+          class="d-inline-flex flex-grow-1"
+        >
+          <span class="me-2">Be the first to vote for this movie</span>
+          <a class="nav-item nav-link px-0 py-0" @click="ratingLikeAction"
+            >Like</a
+          >
+          <span class="mx-1">|</span>
+          <a class="nav-item nav-link px-0 py-0" @click="ratingHateAction"
+            >Hate</a
+          >
+        </div>
+        <div v-else class="d-inline-flex flex-grow-1">
           <span v-if="like">{{ totalLikes }} likes</span>
           <a
             v-else
@@ -32,6 +45,7 @@
             >{{ totalHates }} hates</a
           >
         </div>
+
         <div v-if="hasRating" class="d-flex align-items-center">
           <span>You {{ like ? 'like' : 'hate' }} this movie</span>
           <a
@@ -105,13 +119,15 @@ export default {
         const response = await axios.post(`/api/movies/${this.movie.id}/likes`)
         if (response) {
           // check if already has rating
-          const hasRatingResponse = await axios.get(`/api/ratings/${id}`)
+          const hasRatingResponse = await axios.get(
+            `/api/ratings/${this.movie.id}`
+          )
           if (hasRatingResponse && !hasRatingResponse.data.success) {
-            const rating = await axios.post(`/api/ratings/${id}`, {
+            const rating = await axios.post(`/api/ratings/${this.movie.id}`, {
               rating: 1
             })
             if (rating) {
-              this.rating = rating.data
+              this.rating = rating.data.data
               this.totalLikes++
               this.like = true
               this.hasRating = true
@@ -127,9 +143,11 @@ export default {
         const response = await axios.post(`/api/movies/${this.movie.id}/hates`)
         if (response) {
           // check if already has rating
-          const hasRatingResponse = await axios.get(`/api/ratings/${id}`)
+          const hasRatingResponse = await axios.get(
+            `/api/ratings/${this.movie.id}`
+          )
           if (hasRatingResponse && !hasRatingResponse.data.success) {
-            const rating = await axios.post(`/api/ratings/${id}`, {
+            const rating = await axios.post(`/api/ratings/${this.movie.id}`, {
               rating: -1
             })
             if (rating) {
@@ -145,7 +163,6 @@ export default {
       }
     },
     async unlikeMovie() {
-      console.log('I was called')
       try {
         const response = await axios.post(
           `/api/ratings/${this.rating.id}/reverse`
